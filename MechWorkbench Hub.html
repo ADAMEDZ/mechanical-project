@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>MechWorkbench Hub</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700&display=swap">
+<style>
+:root{--bg:#faf5ea;--pn:#fff;--ink:#2a1d0c;--mu:#7b6a50;--ac:#b86e00;--on:#fff;--ln:#e5d9c3;--ok:#2f7d3a;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#17110a;--pn:#211a10;--ink:#f6ead6;--mu:#b9a584;--ac:#f5a623;--on:#1a1100;--ln:#3a2d1a;--ok:#7bd88f}}
+:root[data-theme="dark"]{--bg:#17110a;--pn:#211a10;--ink:#f6ead6;--mu:#b9a584;--ac:#f5a623;--on:#1a1100;--ln:#3a2d1a;--ok:#7bd88f}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 "Bricolage Grotesque",system-ui,-apple-system,"Segoe UI",sans-serif}
+header,main{max-width:1000px;margin:0 auto;padding:12px 16px}
+header{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px}
+h1{font-size:22px;margin:0;letter-spacing:-.01em}
+h2{margin:0 0 8px;font-size:20px}h3{margin:16px 0 6px;font-size:15px}
+nav{display:flex;gap:6px}
+button,input,select,textarea{font:inherit;color:var(--ink);background:var(--pn);border:1px solid var(--ln);border-radius:8px;padding:7px 11px}
+button{cursor:pointer}
+:is(button,input,select,textarea,a):focus-visible{outline:2px solid var(--ac);outline-offset:2px}
+button.on,.pri{background:var(--ac);border-color:var(--ac);color:var(--on);font-weight:700}
+input,select,textarea{width:100%}
+.card{background:var(--pn);border:1px solid var(--ln);border-radius:12px;padding:14px}
+.card input,.card select,.card textarea{background:var(--bg)}
+.two{display:grid;gap:12px;align-items:start}
+#projects .two{grid-template-columns:1fr 2fr}#calc .two{grid-template-columns:1fr 1fr}
+@media(max-width:700px){.two{grid-template-columns:1fr!important}}
+.row{display:flex;gap:6px}.row input{flex:1;min-width:0;width:auto}
+#plist button{display:block;width:100%;text-align:left;margin-top:6px}
+ul{list-style:none;margin:0;padding:0}
+li{display:flex;gap:8px;align-items:center;padding:6px 0;border-bottom:1px solid var(--ln)}li span{flex:1;overflow-wrap:anywhere}
+.x{border:0;background:none;color:var(--mu);padding:2px 8px}
+.st{font-size:12px;min-width:58px}.st.doing{border-color:var(--ac);color:var(--ac)}.st.done{border-color:var(--ok);color:var(--ok)}
+.mu,small{color:var(--mu)}
+.danger{margin-top:14px;color:#c0392b}
+#cin label{display:block;margin:10px 0 3px;color:var(--mu);font-size:13px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px}
+.res{border:1px solid var(--ln);border-radius:10px;padding:8px 10px}.res small{display:block}.res b{font-size:19px;color:var(--ac)}
+.trace{margin:12px 0;padding:8px 12px;border-left:3px solid var(--ac);font:13px/1.7 ui-monospace,Menlo,Consolas,monospace;overflow-wrap:anywhere}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}
+.lst{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px}
+.lk{display:block;text-decoration:none;color:var(--ink);background:var(--pn);border:1px solid var(--ln);border-radius:10px;padding:10px 12px}.lk:hover{border-color:var(--ac)}.lk b,.lk span,.lk small{display:block}
+details{margin-top:14px}summary{cursor:pointer;color:var(--mu)}
+footer{max-width:1000px;margin:0 auto;padding:4px 16px 24px}
+</style></head><body>
+<header><h1>MechWorkbench Hub</h1>
+<nav><button class="on" data-t="projects">Projects</button><button data-t="calc">Calculators</button><button data-t="lib">Library</button></nav></header>
+<main>
+<section id="projects"><div class="two">
+<aside class="card"><div class="row"><input id="pn" placeholder="New project name" aria-label="New project name"><button id="padd">Add</button></div><div id="plist"></div>
+<details><summary>Backup and restore</summary><p class="mu">Projects live in this browser only. Export to text, keep it somewhere safe, paste it back to restore.</p><textarea id="bk" rows="3" aria-label="Backup text"></textarea><div class="row" style="margin-top:6px"><button id="bx">Export</button><button id="bi">Import</button></div></details></aside>
+<div class="card" id="pdet"></div></div></section>
+<section id="calc" hidden><div class="two">
+<div class="card"><label for="csel" class="mu">Method</label><select id="csel"></select><div id="cin"></div></div>
+<div class="card"><div id="cout" class="grid"></div><div id="ctr" class="trace"></div><button id="csave" class="pri">Save to project</button><p class="mu">Idealized linear-elastic first-pass sizing aids. Verify against codes, handbooks and tests before release.</p></div></div></section>
+<section id="lib" hidden><input id="q" placeholder="Search tools, standards and journals" aria-label="Search library"><div id="chips" class="chips"></div><div id="lst" class="lst"></div></section>
+</main>
+<footer><small>Local-first: nothing leaves your browser. Library links open external sites; check licences and terms before reusing files or data.</small></footer>
+<script>
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const E=(t,p={},...c)=>{const e=document.createElement(t);Object.assign(e,p);e.append(...c);return e};
+const N=(x,d=4)=>Number.isFinite(x)?String(+x.toPrecision(d)):'n/a';
+const ST=['todo','doing','done'];
+let S={p:[],cur:null};
+try{const o=JSON.parse(localStorage.getItem('mwb'));if(o&&Array.isArray(o.p))S=o}catch(e){}
+const save=()=>{try{localStorage.setItem('mwb',JSON.stringify(S))}catch(e){}};
+const cur=()=>S.p.find(x=>x.id===S.cur);
+const mk=n=>{const p={id:Date.now(),name:n,tasks:[],notes:'',calcs:[]};S.p.push(p);S.cur=p.id;return p};
+
+$$('nav button').forEach(b=>b.onclick=()=>{$$('nav button').forEach(x=>x.classList.toggle('on',x===b));$$('main>section').forEach(s=>s.hidden=s.id!==b.dataset.t)});
+
+/* Projects */
+function rp(){
+ const l=$('#plist'),d=$('#pdet'),p=cur();l.replaceChildren();d.replaceChildren();
+ S.p.forEach(q=>l.append(E('button',{className:q.id===S.cur?'on':'',textContent:q.name,onclick:()=>{S.cur=q.id;save();rp()}})));
+ if(!p){d.append(E('p',{className:'mu',textContent:'Add a project to track tasks, notes and saved calculations.'}));return}
+ d.append(E('h2',{textContent:p.name}));
+ const ul=E('ul');
+ p.tasks.forEach((t,i)=>ul.append(E('li',{},
+  E('button',{className:'st '+t.s,textContent:t.s,onclick:()=>{t.s=ST[(ST.indexOf(t.s)+1)%3];save();rp()}}),
+  E('span',{textContent:t.t}),
+  E('button',{className:'x',textContent:'×',title:'Remove task',onclick:()=>{p.tasks.splice(i,1);save();rp()}}))));
+ d.append(ul);
+ const ti=E('input',{placeholder:'Add a task',ariaLabel:'Add a task'});
+ const add=()=>{if(!ti.value.trim())return;p.tasks.push({t:ti.value.trim(),s:'todo'});save();rp();$('#pdet input').focus()};
+ ti.onkeydown=e=>{if(e.key==='Enter')add()};
+ d.append(E('div',{className:'row',style:'margin-top:8px'},ti,E('button',{textContent:'Add',onclick:add})));
+ const n=E('textarea',{rows:4,placeholder:'Notes, requirements, links',ariaLabel:'Project notes',value:p.notes||'',oninput:()=>{p.notes=n.value;save()}});
+ d.append(E('h3',{textContent:'Notes'}),n,E('h3',{textContent:'Saved calculations'}));
+ const cl=E('ul');
+ p.calcs.forEach((c,i)=>cl.append(E('li',{},E('span',{textContent:c}),E('button',{className:'x',textContent:'×',title:'Remove',onclick:()=>{p.calcs.splice(i,1);save();rp()}}))));
+ if(!p.calcs.length)cl.append(E('li',{className:'mu',textContent:'Nothing yet. Use Save to project in Calculators.'}));
+ d.append(cl,E('button',{className:'danger',textContent:'Delete project',onclick(ev){const b=ev.currentTarget;if(b.dataset.c){S.p=S.p.filter(x=>x!==p);S.cur=S.p[0]?S.p[0].id:null;save();rp()}else{b.dataset.c=1;b.textContent='Click again to delete'}}}));
+}
+const addP=()=>{const v=$('#pn').value.trim();if(!v)return;mk(v);$('#pn').value='';save();rp()};
+$('#padd').onclick=addP;$('#pn').onkeydown=e=>{if(e.key==='Enter')addP()};
+$('#bx').onclick=()=>{$('#bk').value=JSON.stringify(S)};
+$('#bi').onclick=()=>{try{const o=JSON.parse($('#bk').value);if(!Array.isArray(o.p))throw 0;S=o;save();rp();$('#bk').value=''}catch(e){$('#bk').value='Not a valid backup'}};
+
+/* Calculators: SI-style inputs, pure functions, formula trace */
+const BI=[['L','Span L (m)',2],['F','Load F (N)',5000],['I','Second moment I (m⁴)',1.2e-6],['E','Young’s modulus E (GPa)',210],['c','Extreme fibre distance c (mm)',40]];
+const U=[['N to lbf',0.2248089431],['mm to in',1/25.4],['MPa to psi',145.0377377],['kW to hp (mechanical)',1.34102209],['N·m to lbf·ft',0.7375621493],['kg to lb',2.2046226218]];
+const C=[
+{n:'Beam, simply supported, center load',i:BI,f:v=>{const Ey=v.E*1e9,c=v.c/1e3,d=v.F*v.L**3/(48*Ey*v.I),M=v.F*v.L/4;return{r:[['Max deflection',N(d*1e3)+' mm'],['Max moment',N(M/1e3)+' kN·m'],['Bending stress',N(M*c/v.I/1e6)+' MPa']],t:['δ = F·L³ / (48·E·I)','M = F·L / 4','σ = M·c / I','Ref: Roark’s Formulas for Stress and Strain']}}},
+{n:'Beam, cantilever, end load',i:BI,f:v=>{const Ey=v.E*1e9,c=v.c/1e3,d=v.F*v.L**3/(3*Ey*v.I),M=v.F*v.L;return{r:[['Tip deflection',N(d*1e3)+' mm'],['Root moment',N(M/1e3)+' kN·m'],['Bending stress',N(M*c/v.I/1e6)+' MPa']],t:['δ = F·L³ / (3·E·I)','M = F·L','σ = M·c / I']}}},
+{n:'Axial stress and strain',i:[['F','Force F (N)',20000],['A','Area A (mm²)',200],['L','Length L (mm)',500],['E','Young’s modulus E (GPa)',210],['Sy','Yield strength Sy (MPa, 0 to skip)',250]],f:v=>{const s=v.F/v.A,e=s/(v.E*1e3),r=[['Stress',N(s)+' MPa'],['Strain',N(e*1e6)+' µε'],['Elongation',N(e*v.L)+' mm']];if(v.Sy>0)r.push(['Yield safety factor',N(v.Sy/s)]);return{r,t:['σ = F / A','ε = σ / E','δ = F·L / (A·E)','n = Sy / σ']}}},
+{n:'Solid shaft torsion',i:[['d','Diameter d (mm)',25],['P','Power P (kW)',15],['n','Speed n (rpm)',1500],['L','Length L (m)',0.5],['G','Shear modulus G (GPa)',80]],f:v=>{const T=v.P*1e3/(2*Math.PI*v.n/60),d=v.d/1e3,J=Math.PI*d**4/32,tau=16*T/(Math.PI*d**3),th=T*v.L/(v.G*1e9*J)*180/Math.PI;return{r:[['Torque T',N(T)+' N·m'],['Max shear stress',N(tau/1e6)+' MPa'],['Polar moment J',N(J*1e12)+' mm⁴'],['Angle of twist',N(th)+' °']],t:['T = P / ω, with ω = 2π·n / 60','τmax = 16·T / (π·d³)','J = π·d⁴ / 32','θ = T·L / (G·J)','Excludes keyways, stress concentration, bending and fatigue']}}},
+{n:'Sensible heat duty',i:[['m','Mass flow (kg/s)',2],['cp','Specific heat cp (kJ/kg·K)',4.18],['dT','Temperature change ΔT (K)',30]],f:v=>({r:[['Heat duty Q',N(v.m*v.cp*v.dT)+' kW']],t:['Q = ṁ·cp·ΔT','Valid without phase change and with constant cp']})},
+{n:'Circular pipe flow',i:[['D','Inner diameter D (mm)',52.5],['L','Length L (m)',100],['Q','Flow Q (L/s)',2],['rho','Density ρ (kg/m³)',998],['mu','Viscosity μ (mPa·s)',1],['e','Roughness ε (mm)',0.045]],f:v=>{const D=v.D/1e3,u=v.Q/1e3/(Math.PI*D*D/4),Re=v.rho*u*D/(v.mu/1e3),r=[['Velocity',N(u)+' m/s'],['Reynolds number',N(Re,5)]],t=['Re = ρ·u·D / μ'];if(Re>2300&&Re<4000){r.push(['Regime','Transition: friction withheld']);return{r,t:[...t,'No reliable f between Re 2300 and 4000']}}const lam=Re<=2300,fr=lam?64/Re:0.25/Math.log10(v.e/1e3/(3.7*D)+5.74/Re**0.9)**2;r.push(['Friction factor',N(fr)],['Pressure drop',N(fr*(v.L/D)*v.rho*u*u/2/1e5)+' bar']);return{r,t:[...t,lam?'Laminar: f = 64 / Re':'Swamee–Jain: f = 0.25 / [log10(ε/(3.7·D) + 5.74/Re^0.9)]²','ΔP = f·(L/D)·ρ·u² / 2']}}},
+{n:'Unit conversion',i:[['v','Value',5000],['p','Conversion',0,U.map(u=>u[0])]],f:v=>({r:[[U[v.p][0],N(v.v*U[v.p][1],7)]],t:['Factor: '+U[v.p][1],'Result = value × factor']})}
+];
+const sel=$('#csel');C.forEach((c,i)=>sel.append(E('option',{value:i,textContent:c.n})));
+let last=null;
+function rc(){
+ const c=C[sel.value],f=$('#cin');f.replaceChildren();
+ c.i.forEach(([k,l,d,o])=>{const id='i_'+k;f.append(E('label',{htmlFor:id,textContent:l}),o?E('select',{id},...o.map((x,j)=>E('option',{value:j,textContent:x}))):E('input',{id,type:'number',step:'any',value:d}))});
+ run();
+}
+function run(){
+ const c=C[sel.value],v={};c.i.forEach(([k])=>v[k]=parseFloat($('#i_'+k).value));
+ let o;try{o=c.i.some(([k])=>isNaN(v[k]))?{r:[['Input','Enter a number in every field']],t:[]}:c.f(v)}catch(e){o={r:[['Error','Check the inputs']],t:[]}}
+ const ins=c.i.map(([k])=>k+'='+v[k]).join(', ');
+ last={txt:c.n+' ('+ins+'): '+o.r.map(x=>x[0]+' '+x[1]).join('; ')};
+ $('#cout').replaceChildren(...o.r.map(([a,b])=>E('div',{className:'res'},E('small',{textContent:a}),E('b',{textContent:b}))));
+ $('#ctr').replaceChildren(E('b',{textContent:'Formula trace'}),...o.t.map(x=>E('div',{textContent:x})),E('div',{className:'mu',textContent:'Inputs: '+ins}));
+}
+sel.onchange=rc;$('#cin').oninput=run;
+$('#csave').onclick=e=>{if(!last)return;const p=cur()||mk('Scratch'),b=e.currentTarget;p.calcs.push(last.txt);save();rp();b.textContent='Saved to '+p.name;setTimeout(()=>b.textContent='Save to project',1500)};
+
+/* Library: curated, legal, free or open-source first */
+const L=[
+['Calculators','Engineering ToolBox','engineeringtoolbox.com','Fluids, thermal and materials tables with calculators'],
+['Calculators','Engineers Edge','engineersedge.com','Large design-data and equation reference'],
+['Calculators','AmesWeb','amesweb.info','Mechanical calculators with cited formulas'],
+['Calculators','Optimal Beam','optimalbeam.com','Beam calculator, free tier covers indeterminate beams'],
+['Calculators','Omni Calculator','omnicalculator.com','Single-purpose calculators with formulas shown'],
+['Calculators','Wolfram Alpha','wolframalpha.com','Symbolic maths and unit-aware calculation'],
+['Calculators','CoolProp','coolprop.org','Open-source fluid property library'],
+['Materials','MatWeb','matweb.com','Datasheets for metals, polymers and ceramics'],
+['Materials','MakeItFrom','makeitfrom.com','Material properties and comparisons'],
+['CAD parts','GrabCAD Library','grabcad.com/library','Community CAD models, free to download'],
+['CAD parts','TraceParts','traceparts.com','Supplier-certified models in 60+ formats'],
+['CAD parts','McMaster-Carr','mcmaster.com','Hardware catalog with CAD downloads'],
+['CAD parts','3D ContentCentral','3dcontentcentral.com','Dassault’s free part library, SolidWorks-ready'],
+['Build tools','FreeCAD','freecad.org','Open-source parametric 3D modeler'],
+['Build tools','OpenSCAD','openscad.org','Script-driven parametric CAD'],
+['Build tools','Onshape','onshape.com','Browser-based CAD with sharing'],
+['Build tools','OpenProject','openproject.org','Open-source project planning'],
+['Build tools','GitHub','github.com','Version control and issues for code and docs'],
+['Simulation','CalculiX','calculix.de','Open-source structural and thermal FEA'],
+['Simulation','PrePoMax','prepomax.fs.um.si','Free pre and post-processor for CalculiX'],
+['Simulation','Code_Aster','code-aster.org','EDF’s open-source structural FEA'],
+['Simulation','Elmer FEM','elmerfem.org','Open-source multiphysics solver'],
+['Simulation','OpenFOAM','openfoam.com','Open-source CFD toolbox'],
+['Simulation','Gmsh','gmsh.info','Mesh generator with built-in CAD engine'],
+['Simulation','SimScale','simscale.com','Cloud FEA and CFD, free community plan'],
+['Learning','MIT OpenCourseWare','ocw.mit.edu','Free course materials incl. mechanical engineering'],
+['Learning','LibreTexts Engineering','eng.libretexts.org','Open engineering textbooks'],
+['Learning','learnmech','learnmech.com','Project-oriented mechanical engineering site'],
+['Research','SNDL (Algeria)','sndl.cerist.dz','National portal to subscribed journals; ask your library for access'],
+['Research','ASJP (Algeria)','asjp.cerist.dz','Algerian scientific journals platform'],
+['Research','Google Scholar','scholar.google.com','Papers, citations and related work'],
+['Research','Semantic Scholar','semanticscholar.org','Paper search with citation context'],
+['Research','OpenAlex','openalex.org','Open catalogue of scholarly works'],
+['Research','CORE','core.ac.uk','Open-access paper aggregator'],
+['Research','arXiv','arxiv.org','Open preprints'],
+['Research','DOAJ','doaj.org','Directory of open-access journals'],
+['Community','Eng-Tips','eng-tips.com','Professional engineering forums'],
+['Community','Engineering Stack Exchange','engineering.stackexchange.com','Q&A for engineering problems'],
+['Community','r/MechanicalEngineering','reddit.com/r/MechanicalEngineering','Students and practitioners']
+];
+let cat='All';const cats=['All',...new Set(L.map(x=>x[0]))];
+function rl(){
+ const q=$('#q').value.toLowerCase();
+ $('#chips').replaceChildren(...cats.map(c=>E('button',{className:c===cat?'on':'',textContent:c,onclick:()=>{cat=c;rl()}})));
+ $('#lst').replaceChildren(...L.filter(x=>(cat==='All'||x[0]===cat)&&(x[0]+x[1]+x[3]).toLowerCase().includes(q)).map(x=>E('a',{className:'lk',href:'https://'+x[2],target:'_blank',rel:'noopener noreferrer'},E('b',{textContent:x[1]}),E('span',{textContent:x[3]}),E('small',{textContent:x[2]}))));
+}
+$('#q').oninput=rl;
+rp();rc();rl();
+</script></body></html>
